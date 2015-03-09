@@ -1,32 +1,34 @@
-# get_dnsmasq_conf
-create dnsmasq.conf from domain list to block advertisement
+# ADBlock DNS
+create own adblock dns using rasberrypi and dnsmasq
 
 ## how to use
-1. Prepare ad_domain_list.txt
+1. install dnsmasq
 ```
-ad.about.co.kr
-ad4980.kr
-ad4989.co.kr
-ad9.kr
-advs.hankyung.com
-adcrm.co.kr
-adtechus.com
-atdmt.com
+~ $ sudo apt-get install dnsmasq
+```
+
+2. clone this project on rasberrypi
+```
+~ $ git clone https://github.com/shuggiejang/get_dnsmasq_conf.git
+```
+
+3. get adblock filters and custom custom_ad_domains
+```
+~ $ cd get_dnsmasq_conf/
+~/get_dnsmasq_conf $ ./update_adblock_filter.sh
+~/get_dnsmasq_conf $ vi custom_ad_domains.txt
+```
+
+4. run the following command
+```
+~/get_dnsmasq_conf $ ./update_dns.sh
+```
+
+5. update DNS on your router
+```
+~ $ ifconfig eth0
+eth0      Link encap:Ethernet  HWaddr b8:27:eb:72:9a:d3
+          inet addr:192.168.0.8  Bcast:192.168.0.255  Mask:255.255.255.0
 ...
 ```
-2. run the following command
-```
-usage:   ./get_dnsmasq_conf.py <IP> <ad_domain_list>
-example: ./get_dnsmasq_conf 192.168.0.8 ad_domain_list.txt
-```
-3. then, you will get the content of dnsmasq.conf to block advertisement
-```
-address=/.ad.about.co.kr/192.168.0.8    #about
-address=/.img.ad-indicator.com/192.168.0.8  #ad-indicator
-address=/.tag.ad-indicator.com/192.168.0.8  #ad-indicator
-address=/.ad134m.com/192.168.0.8    #ad134m
-address=/.ad4980.kr/192.168.0.8 #ad4980
-address=/.ad4989.co.kr/192.168.0.8  #ad4989
-address=/.ad9.kr/192.168.0.8    #ad9
-...
-```
+[DNS configuration on ipTime router](dns_config_on_iptime_router.png)
