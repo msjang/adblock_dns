@@ -8,15 +8,61 @@ if len(sys.argv) is not 3:
 
 IP = sys.argv[1]
 
+re_file=re.compile("\.(png|gif|jpg|css|htm|html|json)$", re.IGNORECASE)
+re_ip=re.compile("^[0-9.]*$")
+
 urls = dict()
 for line in fileinput.input(sys.argv[2]):
-	#remove newline
+	if "!" in line:
+		continue
+	if "," in line:
+		continue
+	if "#" in line:
+		continue
+	if "@" in line:
+		continue
+	if "?" in line:
+		continue
+	if "*" in line:
+		continue
+	if "[" in line:
+		continue
+	if "]" in line:
+		continue
+	if "/" in line:
+		continue
+	if "=" in line:
+		continue
+	if "&" in line:
+		continue
+	if ":" in line:
+		continue
+
+	line = re.sub('\^$','', line.rstrip())
+	line = re.sub('^\|','', line.rstrip())
+	line = re.sub('^\||','', line.rstrip())
+	#line = line.replace("^$third-party","")
+	line = re.sub('\^\$third-party$','', line.rstrip())
+	
+	if "$" in line:
+		continue
+	if line[0] == '-' or line[0] == '_' or line[0] == '.' or line[0] == '*':
+		continue
 	line = line.replace("\r","").replace("\n","")
+	if line[-1] == '-' or line[-1] == '_' or line[-1] == '.' or line[-1] == '*' or line[-1] == '|':
+		continue
+	if line[-1] == '-' or line[-1] == '_' or line[-1] == '.' or line[-1] == '*' or line[-1] == '|':
+		continue
+	if re_ip.match(line) != None:
+		continue
+	if re_file.match(line) != None:
+		continue
+
 	#remove general subdomain
 	#line = line.replace("www.","")
 	line = re.sub("^www\.", "", line)
 	#change top domain
-	line = line.replace("co.kr","co_kr")
+	line = line.replace(".co.kr",".co_kr")
 	#get domain name
 	parse = [x for x in line.split('.')]
 	name = parse[-2]
