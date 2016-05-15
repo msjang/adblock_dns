@@ -1,18 +1,21 @@
 #!/usr/bin/python
 import sys, re, fileinput
 
-if len(sys.argv) is not 3:
-	print "usage:   ./get_dnsmasq_conf.py <IP> <ad_domain_list>"
-	print "example: ./get_dnsmasq_conf 192.168.0.8 ad_domain_list.txt"
+if len(sys.argv) is not 4:
+	print "usage:   ./get_dnsmasq_conf.py <TYPE> <IP(TYPE=DNSMASQ)|ZONE(TYPE=BIND8)> <ad_domain_list>"
+	print "example: ./get_dnsmasq_conf DNSMASQ 192.168.0.8                     ad_domain_list.txt"
+	print "example: ./get_dnsmasq_conf BIND8   /etc/zone/master/null.zone.file ad_domain_list.txt"
 	exit()
 
-IP = sys.argv[1]
+TYPE = sys.argv[1]
+IP   = sys.argv[2]
+ZONE = sys.argv[2]
 
 re_file=re.compile("\.(png|gif|jpg|css|htm|html|json)$", re.IGNORECASE)
 re_ip=re.compile("^[0-9.]*$")
 
 urls = dict()
-for line in fileinput.input(sys.argv[2]):
+for line in fileinput.input(sys.argv[3]):
 	if "!" in line:
 		continue
 	if "," in line:
@@ -90,7 +93,14 @@ for name in sorted(urls.keys()):
 		#print "sub[%s]:\t" % url,
 		#print u
 	urls[name] = [url for url in urls[name] if url not in urls_to_exclude]
-	#generate dnsmasq conf file
-	for url in sorted(urls[name]):
-		#print url
-		print "address=/.%s/%s\t#%s" % (url, IP, name)
+
+	if "DNSMASQ" in TYPE:
+		#generate dnsmasq conf file
+		for url in sorted(urls[name]):
+			#print url
+			print "address=/.%s/%s\t#%s" % (url, IP, name)
+	else:
+		#generate bind8 conf file
+		for url in sorted(urls[name]):
+			#print url
+			print "zone \"%s\" { type master; notify no; file \"%s\"; };" % (url, ZONE)

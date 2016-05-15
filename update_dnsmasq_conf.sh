@@ -1,5 +1,5 @@
 cat *.txt > tmp.lst
-./get_dnsmasq_conf.py 127.0.0.1 tmp.lst > dnsmasq.adlist.conf
+./get_dns_ad_cache.py DNSMASQ 127.0.0.1 tmp.lst > dnsmasq.adlist.conf
 rm tmp.lst
 echo "dnsmasq configuration file created"
 
